@@ -16,7 +16,7 @@ window.KIOSK_CONFIG = {
 
   // Paste the Google Apps Script Web App URL here (see README → Google Sheet setup).
   // Leave empty to run in demo mode: entries are kept on this device only.
-  sheetEndpoint: "",
+  sheetEndpoint: "https://script.google.com/macros/s/AKfycbwmd8Y5yAZGmuq-FBi8efURVY0AbjEMN3jU85SmgtQFCS2nHjZbLPqKsuQjAST5IyGM/exec",
 
   // PIN for the hidden admin panel (tap the logo 5 times on the welcome screen).
   adminPin: "1008",
