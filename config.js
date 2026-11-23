@@ -5,7 +5,11 @@ window.KIOSK_CONFIG = {
   org: {
     legalName: "Vedic Preservation Initiative",
     dba: "Goloka Sanctuary",
-    nonprofitNote: "A non-profit organization · Maybee, Michigan",
+    nonprofitNote: "A non-profit organization",
+    tagline: "Save the Vedas & Protect the Cows",
+    address: "9756 Ferder Road, Maybee, MI",
+    phone: "405-510-1852",
+    social: "Facebook: golokapd · Instagram: golokaeco",
     stat: "7 years · 10+ cows served",
     website: "golokasanctuary.org",
   },
@@ -35,6 +39,7 @@ window.KIOSK_CONFIG = {
       { id: "bhagavatam", label: "Srimad Bhagavatam", emoji: "🪷" },
       { id: "japa", label: "Japa / Chanting", emoji: "📿" },
       { id: "visit", label: "Visit the Sanctuary", emoji: "🌾" },
+      { id: "yoga", label: "Yoga & Meditation", emoji: "🧘" },
       { id: "festivals", label: "Festivals & Events", emoji: "🎉" },
     ],
     "Serve": [
@@ -54,17 +59,21 @@ window.KIOSK_CONFIG = {
     { amount: 108, note: "Auspicious number" },
     { amount: 251, note: "" },
     { amount: 501, note: "" },
+    { amount: 1000, note: "Adopt a cow for one year" },
   ],
 
-  // "Give with Love" donation screen.
+  // "Give with Love" donation screen — levels from the "Help Save the Cows" flyer.
   donation: {
-    amounts: [25, 51, 108, 251, 501],
-    purposes: [
-      { id: "general", label: "Where most needed", emoji: "🙏" },
-      { id: "feed", label: "Feed & nourishment", emoji: "🌾" },
-      { id: "medical", label: "Medical care", emoji: "🩺" },
-      { id: "sponsor", label: "Sponsor a cow", emoji: "🐄" },
+    impact: "Your gift provides food, shelter, veterinary care, and lifelong protection.",
+    quote: "“One can demolish all his sinful acts by simply offering respect to the cows.” — Skanda Purana",
+    tiers: [
+      { id: "bronze", name: "Bronze", amount: 300, desc: "Feed 2 cows for one month", color: "#cd8a4b", ink: "#ffffff" },
+      { id: "silver", name: "Silver", amount: 500, desc: "Feed 4 cows for one month", color: "#d9dade" },
+      { id: "gold", name: "Gold", amount: 1000, desc: "Adopt a cow for one year", color: "#f6d65a" },
+      { id: "platinum", name: "Platinum", amount: 2000, desc: "Adopt 2 cows for one year", color: "#efeff3" },
+      { id: "diamond", name: "Diamond", amount: 5000, desc: "Adopt all sanctuary cows for one year", color: "#8b7356", ink: "#ffffff" },
     ],
+    quickAmounts: [21, 51, 108],
   },
 
   // Shown on the payment screens.

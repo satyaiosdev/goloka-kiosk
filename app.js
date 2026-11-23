@@ -37,7 +37,7 @@
       person: { name: "", phone: "", city: "", email: "", address: "", consent: false },
       interests: [], chant: null, chantOther: "",
       occasions: [{ type: "self", name: "", date: "" }],
-      amount: null, customAmount: "", freq: "once", purpose: "general", payment: null,
+      amount: null, customAmount: "", freq: "once", tier: null, payment: null,
       signature: null, personId: uid(), entryId: null, pending: null, errors: {},
       checkout: null, // { state: "loading"|"ready"|"fallback", url }
     };
@@ -109,6 +109,7 @@
     welcome: () => `
       <section class="screen welcome">
         <img class="logo" src="assets/logo.png" alt="Goloka Sanctuary" data-a="logo" />
+        ${C.org.tagline ? `<div class="eyebrow">${esc(C.org.tagline)}</div>` : ""}
         <h1>Hare Krishna! 🙏</h1>
         <p class="sub">Welcome to ${esc(C.org.dba)}. We'd love to stay connected with you.</p>
         ${C.org.stat ? `<div class="stat">🐄 ${esc(C.org.stat)}</div>` : ""}
@@ -127,7 +128,9 @@
             <span>Feed, shelter &amp; care for our rescued cows.</span>
           </button>
         </div>
-        <div class="org-foot"><b>${esc(C.org.dba)}</b> · ${esc(C.org.legalName)}<br>${esc(C.org.nonprofitNote)}</div>
+        <div class="org-foot"><b>${esc(C.org.dba)}</b> · ${esc(C.org.legalName)} · ${esc(C.org.nonprofitNote)}
+          ${C.org.address ? `<br>📍 ${esc(C.org.address)}${C.org.phone ? ` · 📞 ${esc(C.org.phone)}` : ""}` : ""}
+          ${C.org.social ? `<br>${esc(C.org.social)}` : ""}</div>
       </section>`,
 
     "qc-name": () => `
@@ -270,12 +273,22 @@
     "dn-amount": () => `
       <section class="screen step">${topbar()}
         <h2>Give with Love 💛</h2>
-        <p class="hint">Every gift feeds and cares for Yasodha, Padma, Balaram, Sri Bhima and their whole family.</p>
-        <div class="group-title">Toward</div>
-        <div class="chips">${C.donation.purposes.map((p) => `
-          <button class="chip ${S.purpose === p.id ? "on" : ""}" data-a="purpose" data-v="${p.id}">${p.emoji} ${esc(p.label)}</button>`).join("")}
+        <p class="hint">${esc(C.donation.impact)}</p>
+        ${freqSeg()}
+        <div class="tiers">${C.donation.tiers.map((t) => `
+          <button class="tier ${S.tier === t.id ? "on" : ""}" data-a="tier" data-v="${t.id}" style="--tier:${t.color};--tier-ink:${t.ink || "#2b2b25"}">
+            <span class="tier-name">${esc(t.name)}</span><span class="tier-amt">${money(t.amount)}</span>
+            <span class="tier-desc">${esc(t.desc)}</span></button>`).join("")}
         </div>
-        ${freqSeg()}${amountTiles(C.donation.amounts.map((a) => ({ amount: a })))}
+        <div class="group-title" style="margin-top:6px">Or give any amount</div>
+        <div class="chips">
+          ${C.donation.quickAmounts.map((a) => `<button class="chip ${!S.tier && S.amount === a ? "on" : ""}" data-a="amount" data-v="${a}">${money(a)}</button>`).join("")}
+          <button class="chip ${S.amount === "custom" ? "on" : ""}" data-a="amount" data-v="custom">✏️ Other</button>
+        </div>
+        ${S.amount === "custom" ? `<div class="card"><div class="field" style="margin:0"><label for="f-custom">Amount (USD)</label>
+          <input class="input ${S.errors.amount ? "bad" : ""}" id="f-custom" data-s="customAmount" inputmode="decimal" placeholder="$" value="${esc(S.customAmount)}" autocomplete="off" /></div></div>` : ""}
+        ${err("amount")}
+        ${C.donation.quote ? `<p class="quote">${esc(C.donation.quote)}</p>` : ""}
         ${cta()}
       </section>`,
 
@@ -340,6 +353,7 @@
         <div class="big">${isGoseva() ? "🐄🌼" : "🐄💛"}</div>
         <h2>Thank you, ${esc(firstName())}!</h2>
         <p>${isGoseva() ? "May Gomata bless you and your family. Cow Seva will be offered on your special days." : "Your love keeps our rescued cows fed, safe and cared for."}</p>
+        ${!isGoseva() && tierObj() ? `<div class="pledge-badge">🐄 ${esc(tierObj().name)} – ${esc(tierObj().desc)}${S.freq === "monthly" ? ", every month" : ""}</div>` : ""}
         ${box}
         ${S.payment !== "pledge" ? volunteerNote() : ""}
         <div class="cta-bar narrow"><button class="btn ${S.payment === "card" ? "ghost" : ""}" style="flex:1" data-a="done">Done 🙏</button></div>
@@ -367,7 +381,8 @@
     return S.amount || 0;
   }
   const payLabel = () => (S.payment === "pledge" ? "Pledge – pay later" : (pay(S.payment) || {}).label || "");
-  const purposeLabel = () => (C.donation.purposes.find((p) => p.id === S.purpose) || {}).label || "";
+  const tierObj = () => C.donation.tiers.find((t) => t.id === S.tier);
+  const purposeLabel = () => { const t = tierObj(); return t ? `${t.name} – ${t.desc}` : "Any amount"; };
   const filledOccasions = () => S.occasions.filter((o) => o.date);
   const memo = () => `${isGoseva() ? "Goseva" : "Donation"} – ${S.person.name.trim()}`;
   function methodUrl(p) {
@@ -452,8 +467,8 @@
       case "occ-add": S.occasions.push({ type: S.occasions.length === 1 ? "spouse" : "child", name: "", date: "" }); render(); return;
       case "occ-rm": S.occasions.splice(Number(el.dataset.i), 1); render(); return;
       case "freq": S.freq = v; render(); return;
-      case "purpose": S.purpose = v; render(); return;
-      case "amount": S.amount = v === "custom" ? "custom" : Number(v); S.errors = {}; render(); if (v === "custom") app.querySelector("#f-custom")?.focus(); return;
+      case "tier": { const t = C.donation.tiers.find((x) => x.id === v); S.tier = v; S.amount = t.amount; S.errors = {}; render(); return; }
+      case "amount": S.tier = null; S.amount = v === "custom" ? "custom" : Number(v); S.errors = {}; render(); if (v === "custom") app.querySelector("#f-custom")?.focus(); return;
       case "pay": S.payment = v; S.errors = {}; render(); return;
       case "pay-here": return payHere();
       case "sig-clear": clearSignature(); return;
