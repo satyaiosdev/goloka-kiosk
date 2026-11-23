@@ -1,6 +1,6 @@
 // Caches the kiosk so it still opens when event Wi-Fi drops.
 // Bump VERSION after changing any file so iPads pick up the update.
-const VERSION = "gk-v5";
+const VERSION = "gk-v6";
 const SHELL = ["./", "index.html", "styles.css", "app.js", "config.js", "assets/logo.png", "manifest.webmanifest",
   "assets/photos/cow-1.jpg", "assets/photos/cow-2.jpg", "assets/photos/cow-3.jpg", "assets/photos/cow-4.jpg", "assets/photos/cow-5.jpg"];
 

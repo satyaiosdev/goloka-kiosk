@@ -89,7 +89,9 @@ window.KIOSK_CONFIG = {
     { id: "card", label: "Credit / Debit Card", sub: "Apple Pay too · secure", emoji: "💳", featured: true, badge: "Recommended",
       squareCheckout: true,
       link: "https://donorbox.org/goloka-eco-farm?amount={amount}",
-      atTable: "Or tap your card with a volunteer at the table." },
+      // tapFirst: show "tap your card with a volunteer" first and highlighted, then QR / pay-on-device below.
+      tapFirst: true, atTable: "Tap your card with a volunteer",
+      atTableSub: "Our volunteer at the table will take your card: tap, insert or swipe." },
     { id: "zelle", label: "Zelle", sub: "From your bank app", emoji: "🏦", featured: true,
       handle: "donate@vedicpi.org", holder: "Vedic Preservation Initiative", payHere: false, // Zelle is paid from the donor's own bank app
       link: "https://enroll.zellepay.com/qr-codes?data=ewogICAgInRva2VuIjogImRvbmF0ZUB2ZWRpY3BpLm9yZyIsCiAgICAibmFtZSI6ICJWRURJQyBQUkVTRVJWQVRJT04gSU5JVElBVElWRSIsCiAgICAiYWN0aW9uIjogInBheW1lbnQiCn0=" },

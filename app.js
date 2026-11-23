@@ -335,6 +335,9 @@
         const loading = p.id === "card" && S.checkout?.state === "loading";
         const nothing = !url && !p.handle && !p.atTable && !loading;
         box = `<div class="pay-box"><h3>${p.emoji} ${esc(p.label)}</h3><div class="amt">${amt}</div>
+          ${p.tapFirst && p.atTable ? `<div class="tap-first"><div class="tap-ic">💳</div>
+              <div><b>${esc(p.atTable)}</b>${p.atTableSub ? `<span>${esc(p.atTableSub)}</span>` : ""}</div></div>
+            <div class="or-line"><span>or pay yourself</span></div>` : ""}
           ${loading ? `<div class="qr-wait">Preparing secure checkout…</div>` : ""}
           ${url ? `<div class="pay-split">
               <div><div class="qr" id="qr"></div><div class="cap">Scan with your phone camera</div></div>
@@ -343,7 +346,7 @@
                 ${p.id === "card" ? `<div class="cap">Card or Apple Pay · ${S.checkout?.state === "ready" ? "secured by Square" : "secure checkout"}</div>` : ""}</div>`}
             </div>` : ""}
           ${p.handle ? `<div class="handle">${esc(p.handle)}</div>${p.holder ? `<div class="cap">${esc(p.holder)}</div>` : ""}` : ""}
-          ${p.atTable ? `<div class="at-table">${esc(p.atTable)}</div>` : ""}
+          ${p.atTable && !p.tapFirst ? `<div class="at-table">${esc(p.atTable)}</div>` : ""}
           ${nothing ? `<div class="at-table">Please see a volunteer at the table to complete your gift.</div>` : ""}
           ${p.id !== "cash" ? `<div class="cap" style="margin-top:10px">Memo: “${esc(memo())}”</div>` : ""}
         </div>`;
